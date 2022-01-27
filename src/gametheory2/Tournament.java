@@ -1,6 +1,8 @@
 package gametheory2;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Tournament {
 
@@ -20,7 +22,7 @@ public class Tournament {
 		
 		//the players on this stage
 		for (int i = 0; i < 2; i++) {
-			consList.add(new Contestant1("Player" + (i + 1)));	//very generic names		
+			consList.add(new Contestant1("Player" + (i + 1)));	//very generic names
 		}
 		//and one more random contestant...
 		consList.add(new Contestant2("Random strat!"));
@@ -43,8 +45,41 @@ public class Tournament {
 	
 	//returns the Contestant that wins the match, or null if the match ends tied
 	public Contestant playMatch(Contestant first, Contestant second) {
-		
-		
+		int rounds = 0;
+		while (rounds < TournWrapper.MAX_ROUNDS){
+
+			System.out.println(first.toString());
+			System.out.println(second.toString());
+
+			int firstStrat;
+			int secondStrat;
+
+			firstStrat = first.pickStrat(second.getName(),second.getHealth(),second.getMoves());
+			secondStrat = second.pickStrat(first.getName(),second.getHealth(),first.getMoves());
+
+			Point results = gameMatrix.getResult(firstStrat,secondStrat);
+			first.addHealth(results.x);
+			second.addHealth(results.y);
+
+			rounds++;
+
+			first.addMove(firstStrat);
+			second.addMove(secondStrat);
+
+			if(first.getHealth() < 0 || second.getHealth() < 0){
+				if(first.getHealth() > second.getHealth()){
+					return first;
+				}else if (first.getHealth() < second.getHealth()){
+					return second;
+				}else if(first.getHealth() == second.getHealth()){
+					return null;
+				}
+			}
+		}
+
+
+
+
 		//clear the moves for both contestants, and then...
 		
 		//run a match in a while loop that stops when at least one player's health has hit 0
@@ -72,18 +107,58 @@ public class Tournament {
 		Contestant second = cons[secondCon];
 		int firstWins = 0;
 		int firstLoses = 0;
+		int draws = 0;
 		//conduct a match for at least _trials_ number of times
 		//if tied, return the result of a fair coin flip between first and second
+		for (int i = 0; i < trials; i++) {
+			Contestant c = playMatch(first,second);
+			if (!Objects.isNull(c) && c.equals(first)){
+				firstWins++;
+			}else if (!Objects.isNull(c) && c.equals(second)){
+				firstLoses++;
+			}else{
+				draws++;
+			}
+			first.setHealth(TournWrapper.INIT_HEALTH);
+			second.setHealth(TournWrapper.INIT_HEALTH);
+//			if (playMatch(first,second).equals(first)){
+//				firstWins++;
+//			}else{
+//				firstLoses++;
+//			}
+			System.out.println(draws);
+		}
+// UPDATE DATA
+		data[firstCon][secondCon] = firstWins;
+		data[secondCon][firstCon] = firstLoses;
+		if(firstWins > firstLoses){
+			return first;
+		}else{
+			return second;
+		}
+
 
 		//before returning the winner, update the data[][] variable so that the number
 		//of wins by each side is stored in that variable
 		//return the winning side's contestant variable
-		return second;
 	}
 		
 	//have contestants face each other in a round robin setting for a numTrials number of matches
 	//update your wins variable here
 	public void runTournament() {
+//		playMatch(new Contestant1("con1"),new Contestant2("con2"));
+		for (int i = 0; i < cons.length - 1; i++) {
+			for (int j = i + 1; j < cons.length; j++) {
+				Contestant c = runMatches(i,j);
+				if (c.equals(getCons(i))){
+					wins[i]++;
+				}else if (c.equals(getCons(j))){
+					wins[j]++;
+				}
+
+			}
+		}
+
 
 		//your code goes here
 
