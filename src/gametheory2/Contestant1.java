@@ -10,6 +10,16 @@ public class Contestant1 extends Challenger {
 	
 	@Override //here to state you're overriding an abstract method in the superclass Challenger
 	public int pickStrat(String oppName, int oppHealth, ArrayList<Integer> oppMoves) {
+		// Available Variables
+
+		// OWN
+		// health
+		// name
+		// moves
+
+		// oppName
+		// oppHealth
+		// oppMoves
 		
 		if (oppMoves.isEmpty()) {
 			return gameMatrix.ATTACK;

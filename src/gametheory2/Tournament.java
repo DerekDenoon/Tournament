@@ -21,11 +21,16 @@ public class Tournament {
 		//put that initialization here
 		
 		//the players on this stage
-		for (int i = 0; i < 2; i++) {
-			consList.add(new Contestant1("Player" + (i + 1)));	//very generic names
-		}
+		consList.add(new Contestant3("Contestant3 "));	//very generic names
+
 		//and one more random contestant...
-		consList.add(new Contestant2("Random strat!"));
+		consList.add(new TestContestant1("TestContestant1"));
+		consList.add(new TestContestant2("TestContestant2"));
+		consList.add(new TestContestant3("TestContestant3"));
+		consList.add(new Derek2("Derek2"));
+		consList.add(new Derek3("Derek3"));
+		consList.add(new Derek4("Derek4"));
+
 
 		cons = consList.toArray(new Contestant[0]); //a convenient way to transform an ArrayList into an array
 		wins = new int[cons.length];				//how many wins each contestant got
@@ -48,8 +53,8 @@ public class Tournament {
 		int rounds = 0;
 		while (rounds < TournWrapper.MAX_ROUNDS){
 
-			System.out.println(first.toString());
-			System.out.println(second.toString());
+//			System.out.println(first.toString());
+//			System.out.println(second.toString());
 
 			int firstStrat;
 			int secondStrat;
@@ -126,11 +131,21 @@ public class Tournament {
 //			}else{
 //				firstLoses++;
 //			}
-			System.out.println(draws);
+//			System.out.println(draws);
 		}
 // UPDATE DATA
 		data[firstCon][secondCon] = firstWins;
 		data[secondCon][firstCon] = firstLoses;
+
+		if (firstWins == firstLoses) {
+			double rand = Math.random();
+			if (rand > 0.5){
+				return first;
+			}else{
+				return second;
+			}
+
+		}
 		if(firstWins > firstLoses){
 			return first;
 		}else{
